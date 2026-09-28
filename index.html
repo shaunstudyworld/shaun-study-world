@@ -1,1 +1,28 @@
-<!DOCTYPE html><html lang='zh'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Shaun Study World</title><link rel='stylesheet' href='css/style.css'></head><body><div class='container'><section class='hero'><div class='left'><h1>🎵 Shaun Study World</h1><p>Standard 4 · Buddy 音乐冒险</p><div class='stats'><span id='xp'>⭐ XP 0</span><span id='lv'>🏆 Lv1</span></div></div><img src='assets/buddy.svg' class='buddy'></section><h2>🌍 选择学习世界</h2><div class='grid'><button onclick='start()'>🎺 乐器王国</button><button disabled>🎼 五线谱森林</button><button disabled>🎵 音符山谷</button><button disabled>🎤 Recorder学院</button></div><section id='quiz' class='card hidden'><div class='progress'><div id='bar'></div></div><h2 id='q'></h2><img id='img'><div id='opts'></div><p id='fb'></p></section></div><script src='js/app.js'></script></body></html>
+<!DOCTYPE html><html lang='zh'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Shaun Study World</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:linear-gradient(#d8f3ff,#fff)}.wrap{max-width:960px;margin:auto;padding:20px}.hero{background:#fff;border-radius:28px;padding:24px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 12px 28px rgba(0,0,0,.08)}.buddy{font-size:80px}.stats span{background:#fff3c4;padding:8px 14px;border-radius:999px;margin-right:8px;font-weight:bold}.map{margin:24px 0;background:linear-gradient(#c9f1ff,#dff7d9);border-radius:30px;padding:30px;position:relative;height:360px}.island{position:absolute;border:none;border-radius:50%;width:120px;height:120px;color:#fff;font-weight:bold;cursor:pointer}#i1{background:#ff8a00;left:40px;bottom:30px}#i2{background:#9ca3af;left:220px;top:40px}#i3{background:#9ca3af;left:410px;bottom:120px}#i4{background:#9ca3af;right:180px;top:60px}#i5{background:#9ca3af;right:30px;bottom:30px}.card{background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 28px rgba(0,0,0,.08)}.hidden{display:none}.opt{display:block;width:100%;padding:14px;margin:10px 0;border:none;border-radius:16px;background:#eef6ff;cursor:pointer}.progress{height:10px;background:#e5e7eb;border-radius:99px;overflow:hidden}.bar{height:100%;width:0;background:#22c55e}.big{font-size:84px;text-align:center}
+</style></head><body><div class='wrap'><div class='hero'><div><h1>🎵 Shaun Study World</h1><p>四年级音乐互动学习</p><div class='stats'><span id='xp'>⭐ XP 0</span><span id='lv'>🏆 Lv1</span></div></div><div class='buddy'>🎧</div></div><div class='map'><button id='i1' class='island' onclick='start()'>🎺<br>乐器王国</button><button id='i2' class='island' disabled>🎼</button><button id='i3' class='island' disabled>🎵</button><button id='i4' class='island' disabled>🎤</button><button id='i5' class='island' disabled>🏰</button></div><div id='quiz' class='card hidden'><div class='progress'><div id='bar' class='bar'></div></div><div id='num'></div><div id='emoji' class='big'></div><h2 id='q'></h2><div id='opts'></div><div id='fb'></div></div></div><script>
+const qs=[
+{a:'竖笛',e:'🎵',o:['小提琴', '竖笛', '手鼓']},
+{a:'手风琴',e:'🪗',o:['手风琴', '锣', '竖笛']},
+{a:'小提琴',e:'🎻',o:['小提琴', '三角铁', '锣']},
+{a:'锣',e:'🔔',o:['手鼓', '锣', '竖笛']},
+{a:'三角铁',e:'🔺',o:['三角铁', '手风琴', '竖笛']},
+{a:'手鼓',e:'🥁',o:['手鼓', '锣', '小提琴']},
+{a:'竖笛',e:'🎵',o:['竖笛', '手鼓', '三角铁']},
+{a:'小提琴',e:'🎻',o:['手风琴', '小提琴', '锣']},
+{a:'手风琴',e:'🪗',o:['竖笛', '手风琴', '手鼓']},
+{a:'锣',e:'🔔',o:['三角铁', '手鼓', '锣']},
+{a:'三角铁',e:'🔺',o:['小提琴', '三角铁', '手风琴']},
+{a:'手鼓',e:'🥁',o:['竖笛', '手鼓', '锣']},
+{a:'竖笛',e:'🎵',o:['竖笛', '小提琴', '手鼓']},
+{a:'小提琴',e:'🎻',o:['锣', '小提琴', '竖笛']},
+{a:'手风琴',e:'🪗',o:['手风琴', '三角铁', '手鼓']},
+{a:'锣',e:'🔔',o:['锣', '竖笛', '手鼓']},
+{a:'三角铁',e:'🔺',o:['手风琴', '三角铁', '锣']},
+{a:'手鼓',e:'🥁',o:['小提琴', '手鼓', '竖笛']},
+{a:'竖笛',e:'🎵',o:['手鼓', '竖笛', '锣']},
+{a:'小提琴',e:'🎻',o:['小提琴', '手风琴', '三角铁']}];let i=0,x=0;
+function start(){document.getElementById('quiz').classList.remove('hidden');show();window.scrollTo({top:500,behavior:'smooth'});}
+function show(){let q=qs[i];num.innerText=`第 ${i+1}/20 题`;emoji.innerText=q.e;document.getElementById('q').innerText='这是什么乐器？';bar.style.width=(i/20*100)+'%';opts.innerHTML='';q.o.forEach(v=>{let b=document.createElement('button');b.className='opt';b.innerText=v;b.onclick=()=>pick(v);opts.appendChild(b);});fb.innerText='';}
+function pick(v){if(v===qs[i].a){x+=5;xp.innerText='⭐ XP '+x;lv.innerText='🏆 Lv '+(1+Math.floor(x/20));fb.innerText='🎉 Buddy：答对了！';}else fb.innerText='💡 正确答案：'+qs[i].a;i++;setTimeout(()=>{if(i<20)show();else{bar.style.width='100%';emoji.innerText='🏆';q.innerText='恭喜完成乐器王国！';opts.innerHTML='';fb.innerText='获得 '+x+' XP';i1.innerHTML='✅<br>完成';i1.disabled=true;i2.disabled=false;i2.style.background='#2563eb';}},600);}
+</script></body></html>
